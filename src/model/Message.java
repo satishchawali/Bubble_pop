@@ -24,7 +24,7 @@ public class Message {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public -int getSenderId() { return senderId; }
+    public int getSenderId() { return senderId; }
     public void setSenderId(int senderId) { this.senderId = senderId; }
 
     public int getReceiverId() { return receiverId; }
