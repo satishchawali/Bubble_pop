@@ -16,7 +16,7 @@ public class GroupChatController {
     // Create a new group chat
     public boolean createGroupChat(String groupName, List<Integer> memberIds) {
         GroupChat groupChat = new GroupChat(0, groupName, memberIds);
-        return groupChatDAO.createGroupChat(groupChat);
+        return groupChatDAO.createGroup(groupChat);
     }
 
     // Send a message in a group chat
@@ -27,6 +27,6 @@ public class GroupChatController {
 
     // Retrieve messages from a group chat
     public List<Message> getMessages(int groupId) {
-        return groupChatDAO.getMessages(groupId);
+        return groupChatDAO.getGroupMessages(groupId);
     }
 }
