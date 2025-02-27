@@ -22,7 +22,7 @@ public class GroupChatController {
     // Send a message in a group chat
     public boolean sendMessage(int groupId, int senderId, String content) {
         Message message = new Message(0, senderId, groupId, content, new Date(), false);
-        return groupChatDAO.sendMessage(message);
+        return groupChatDAO.saveGroupMessage(message);
     }
 
     // Retrieve messages from a group chat
