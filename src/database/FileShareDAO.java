@@ -3,10 +3,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import model.FileShare;
-import model.Notification;
-import model.Post;
 
 public class FileShareDAO {
     private Connection conn;
