@@ -1,10 +1,6 @@
 package database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/bubblepop"; // Change `bubblepop` to your actual DB name
     private static final String USER = "root"; // Change this to your database username
@@ -33,5 +29,4 @@ public class DatabaseConnection {
             }
         }
         return connection;
-    }
 }
