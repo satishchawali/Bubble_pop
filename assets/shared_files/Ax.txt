@@ -1,0 +1,7 @@
+Ax
+bx
+cd
+dx
+general purpose register are used to store data
+
+move destination,source data
