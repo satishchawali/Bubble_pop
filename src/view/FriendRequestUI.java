@@ -4,13 +4,12 @@ import controller.FriendRequestController;
 import model.FriendRequest;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 
-public class FriendRequestUI extends JFrame {
-
+public class FriendRequestUI extends JPanel {
     private FriendRequestController controller;
 
     // Components for sending a friend request
@@ -29,23 +28,29 @@ public class FriendRequestUI extends JFrame {
     private JTextArea txtAreaResults;
 
     public FriendRequestUI() {
-        // Initialize the controller (assumes controller has the needed methods)
+        // Initialize the controller (assumes your controller has the needed methods)
         controller = new FriendRequestController();
         initializeUI();
     }
 
     private void initializeUI() {
-        setTitle("Friend Request Manager");
-        setSize(600, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Create a tabbed pane to separate functions
+        // Header Label
+        JLabel headerLabel = new JLabel("Friend Requests", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
+        headerLabel.setForeground(new Color(50, 205, 50));
+        add(headerLabel, BorderLayout.NORTH);
+
+        // Create a tabbed pane to separate functionalities
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // ----------------- Send Request Panel -----------------
         JPanel panelSend = new JPanel(new GridLayout(3, 2, 10, 10));
-        panelSend.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelSend.setBackground(Color.WHITE);
+        panelSend.setBorder(new EmptyBorder(10, 10, 10, 10));
         panelSend.add(new JLabel("Sender ID:"));
         txtSenderId = new JTextField();
         panelSend.add(txtSenderId);
@@ -53,31 +58,48 @@ public class FriendRequestUI extends JFrame {
         txtReceiverId = new JTextField();
         panelSend.add(txtReceiverId);
         btnSend = new JButton("Send Friend Request");
+        btnSend.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        btnSend.setBackground(new Color(70, 130, 180));
+        btnSend.setForeground(Color.WHITE);
         panelSend.add(btnSend);
         panelSend.add(new JLabel()); // filler
 
         // ----------------- Update Request Panel -----------------
         JPanel panelUpdate = new JPanel(new GridLayout(2, 2, 10, 10));
-        panelUpdate.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelUpdate.setBackground(Color.WHITE);
+        panelUpdate.setBorder(new EmptyBorder(10, 10, 10, 10));
         panelUpdate.add(new JLabel("Request ID:"));
         txtRequestId = new JTextField();
         panelUpdate.add(txtRequestId);
         btnAccept = new JButton("Accept Request");
+        btnAccept.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        btnAccept.setBackground(new Color(60, 179, 113));
+        btnAccept.setForeground(Color.WHITE);
         btnReject = new JButton("Reject Request");
+        btnReject.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        btnReject.setBackground(new Color(220, 20, 60));
+        btnReject.setForeground(Color.WHITE);
         panelUpdate.add(btnAccept);
         panelUpdate.add(btnReject);
 
         // ----------------- View Requests Panel -----------------
         JPanel panelView = new JPanel(new BorderLayout(10, 10));
+        panelView.setBackground(Color.WHITE);
         JPanel panelInput = new JPanel(new FlowLayout());
+        panelInput.setBackground(Color.WHITE);
         panelInput.add(new JLabel("User ID:"));
         txtUserId = new JTextField(10);
+        txtUserId.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         panelInput.add(txtUserId);
         btnView = new JButton("View Friend Requests");
+        btnView.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        btnView.setBackground(new Color(70, 130, 180));
+        btnView.setForeground(Color.WHITE);
         panelInput.add(btnView);
         panelView.add(panelInput, BorderLayout.NORTH);
         txtAreaResults = new JTextArea();
         txtAreaResults.setEditable(false);
+        txtAreaResults.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(txtAreaResults);
         panelView.add(scrollPane, BorderLayout.CENTER);
 
@@ -88,7 +110,7 @@ public class FriendRequestUI extends JFrame {
 
         add(tabbedPane, BorderLayout.CENTER);
 
-        // -------------- Event Handling using AWT Listeners --------------
+        // -------------- Event Handling --------------
         btnSend.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 sendFriendRequest();
@@ -114,14 +136,11 @@ public class FriendRequestUI extends JFrame {
         });
     }
 
-    // Calls the controller to send a friend request.
-    // Note: Since your current controller uses a null request date,
-    // you might consider modifying it to use the current date (new Date()).
+    // Method to send a friend request.
     private void sendFriendRequest() {
         try {
             int senderId = Integer.parseInt(txtSenderId.getText().trim());
             int receiverId = Integer.parseInt(txtReceiverId.getText().trim());
-            // Optionally, set the request date in your controller or DAO.
             boolean success = controller.sendFriendRequest(senderId, receiverId);
             if (success) {
                 JOptionPane.showMessageDialog(this, "Friend request sent successfully!");
@@ -133,7 +152,7 @@ public class FriendRequestUI extends JFrame {
         }
     }
 
-    // Updates the friend request status (accept or reject) using the controller.
+    // Method to update the status of a friend request.
     private void updateRequestStatus(String newStatus) {
         try {
             int requestId = Integer.parseInt(txtRequestId.getText().trim());
@@ -153,12 +172,10 @@ public class FriendRequestUI extends JFrame {
         }
     }
 
-    // Views friend requests for a specific user.
-    // (Assumes you add the corresponding method in the controller.)
+    // Method to view friend requests for a specific user.
     private void viewFriendRequests() {
         try {
             int userId = Integer.parseInt(txtUserId.getText().trim());
-            // This method must be implemented in your FriendRequestController.
             List<FriendRequest> requests = controller.getFriendRequestsForUser(userId);
             if (requests.isEmpty()) {
                 txtAreaResults.setText("No friend requests found for user ID: " + userId);
@@ -172,14 +189,5 @@ public class FriendRequestUI extends JFrame {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Please enter a valid user ID.");
         }
-    }
-
-    public static void main(String[] args) {
-        // Ensure thread safety with SwingUtilities.invokeLater
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new FriendRequestUI().setVisible(true);
-            }
-        });
     }
 }
