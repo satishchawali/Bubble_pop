@@ -6,7 +6,7 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
-public class ProfilePage extends JFrame {
+public class ProfilePage extends JPanel {
     private JTextField usernameField, emailField;
     private JButton updateButton, deleteButton, logoutButton, saveUpdate;
     private ProfileController profileController;
@@ -15,51 +15,92 @@ public class ProfilePage extends JFrame {
     public ProfilePage(User user) {
         this.user = user;
         this.profileController = new ProfileController();
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
 
-        setTitle("Profile - Bubble Pop");
-        setSize(350, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(5, 2, 10, 10));
+        // Header
+        JLabel headerLabel = new JLabel("Profile", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
+        headerLabel.setForeground(new Color(50, 205, 50));
+        add(headerLabel, BorderLayout.NORTH);
 
-        // Components
-        add(new JLabel("Username:"));
-        usernameField = new JTextField(user.getUsername());
+        // Form Panel for displaying username and email.
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Username label and field.
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Username:"), gbc);
+        gbc.gridx = 1;
+        usernameField = new JTextField(user.getUsername(), 20);
         usernameField.setEditable(false);
-        add(usernameField);
+        formPanel.add(usernameField, gbc);
 
-        add(new JLabel("Email:"));
-        emailField = new JTextField(user.getEmail());
+        // Email label and field.
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        emailField = new JTextField(user.getEmail(), 20);
         emailField.setEditable(false);
-        add(emailField);
+        formPanel.add(emailField, gbc);
 
+        add(formPanel, BorderLayout.CENTER);
+
+        // Button Panel for actions.
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.WHITE);
         updateButton = new JButton("Update Profile");
         deleteButton = new JButton("Delete Account");
         logoutButton = new JButton("Logout");
         saveUpdate = new JButton("Save");
 
-        add(updateButton);
-        add(deleteButton);
-        add(logoutButton);
+        // Style buttons.
+        updateButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        deleteButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        logoutButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        saveUpdate.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
 
-        // Update button action
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(logoutButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Action for updating profile.
         updateButton.addActionListener(e -> {
-            add(saveUpdate);
             usernameField.setEditable(true);
             emailField.setEditable(true);
+            // Add saveUpdate button if not already added.
+            if (!isButtonInPanel(buttonPanel, saveUpdate)) {
+                buttonPanel.add(saveUpdate);
+                buttonPanel.revalidate();
+                buttonPanel.repaint();
+            }
         });
-        saveUpdate.addActionListener(e ->{
+
+        // Action for saving updates.
+        saveUpdate.addActionListener(e -> {
             String newUsername = usernameField.getText();
             String newEmail = emailField.getText();
-
             boolean updated = profileController.updateProfile(user.getId(), newUsername, newEmail, user.getPassword());
             if (updated) {
                 JOptionPane.showMessageDialog(this, "Profile Updated Successfully!");
+                usernameField.setEditable(false);
+                emailField.setEditable(false);
+                buttonPanel.remove(saveUpdate);
+                buttonPanel.revalidate();
+                buttonPanel.repaint();
             } else {
                 JOptionPane.showMessageDialog(this, "Profile Update Failed!");
             }
         });
 
-        // Delete button action
+        // Action for deleting account.
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete your account?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
@@ -67,19 +108,28 @@ public class ProfilePage extends JFrame {
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "Account Deleted Successfully!");
                     new LoginScreen();
-                    dispose();
+                    // Close the parent frame if needed.
+                    SwingUtilities.getWindowAncestor(this).dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to Delete Account!");
                 }
             }
         });
 
-        // Logout button action
+        // Action for logging out.
         logoutButton.addActionListener(e -> {
             new LoginScreen();
-            dispose();
+            SwingUtilities.getWindowAncestor(this).dispose();
         });
+    }
 
-        setVisible(true);
+    // Helper method to check if a button is already in a panel.
+    private boolean isButtonInPanel(JPanel panel, JButton button) {
+        for (Component comp : panel.getComponents()) {
+            if (comp.equals(button)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

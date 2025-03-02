@@ -1,59 +1,70 @@
 package view;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
-public class ChatWindow {
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Chat Application");
-        frame.setSize(400, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+public class ChatWindow extends JPanel {
+    private JLabel chatRoomLabel;
+    private JTextArea chatArea;
+    private JTextField messageField;
+    private JButton sendButton;
+    
+    public ChatWindow() {
+        setLayout(new BorderLayout());
         
-        // Chat Area
-        JTextArea chatArea = new JTextArea();
+        // Header with chat room name
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(50, 50, 50));
+        chatRoomLabel = new JLabel("Select a chat room", SwingConstants.CENTER);
+        chatRoomLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
+        chatRoomLabel.setForeground(Color.WHITE);
+        headerPanel.add(chatRoomLabel);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        // Chat area for messages
+        chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         chatArea.setWrapStyleWord(true);
-        JScrollPane chatScrollPane = new JScrollPane(chatArea);
-        frame.add(chatScrollPane, BorderLayout.CENTER);
+        chatArea.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        JScrollPane scrollPane = new JScrollPane(chatArea);
+        add(scrollPane, BorderLayout.CENTER);
         
-        // Input Panel
+        // Input area for new messages
         JPanel inputPanel = new JPanel(new BorderLayout());
-        JTextField messageField = new JTextField();
-        JButton sendButton = new JButton("Send");
-        
-        // Styling
-        messageField.setFont(new Font("Arial", Font.PLAIN, 14));
-        sendButton.setFont(new Font("Arial", Font.BOLD, 14));
+        messageField = new JTextField();
+        messageField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        sendButton = new JButton("Send");
+        sendButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         sendButton.setBackground(new Color(37, 211, 102));
         sendButton.setForeground(Color.WHITE);
-        
         inputPanel.add(messageField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
-        frame.add(inputPanel, BorderLayout.SOUTH);
+        add(inputPanel, BorderLayout.SOUTH);
         
-        // Action Listener for Sending Messages
-        sendButton.addActionListener(new ActionListener() {
+        // Action listeners for sending messages
+        ActionListener sendAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = messageField.getText().trim();
-                if (!message.isEmpty()) {
-                    chatArea.append("You: " + message + "\n");
-                    messageField.setText("");
-                }
+                sendMessage();
             }
-        });
-        
-        // Enter key to send message
-        messageField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendButton.doClick();
-            }
-        });
-        
-        frame.setVisible(true);
+        };
+        sendButton.addActionListener(sendAction);
+        messageField.addActionListener(sendAction);
+    }
+    
+    public void setChatRoom(String chatRoom) {
+        chatRoomLabel.setText(chatRoom + " Room");
+        chatArea.setText(""); // Optionally clear or load chat history
+    }
+    
+    private void sendMessage() {
+        String message = messageField.getText().trim();
+        if (!message.isEmpty()) {
+            chatArea.append("You: " + message + "\n");
+            messageField.setText("");
+            // TODO: Integrate real-time messaging logic here (e.g., sending via WebSocket)
+        }
     }
 }
