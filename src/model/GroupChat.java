@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class GroupChat {
     private int id;
@@ -10,7 +11,7 @@ public class GroupChat {
     public GroupChat(int id, String groupName, List<Integer> memberIds) {
         this.id = id;
         this.groupName = groupName;
-        this.memberIds = memberIds;
+        this.memberIds = new ArrayList<>(memberIds);
     }
 
     // Getters and Setters
@@ -20,6 +21,18 @@ public class GroupChat {
     public String getGroupName() { return groupName; }
     public void setGroupName(String groupName) { this.groupName = groupName; }
 
-    public List<Integer> getMemberIds() { return memberIds; }
-    public void setMemberIds(List<Integer> memberIds) { this.memberIds = memberIds; }
+    public List<Integer> getMemberIds() { return new ArrayList<>(memberIds); }
+    public void setMemberIds(List<Integer> memberIds) { this.memberIds = new ArrayList<>(memberIds); }
+    
+    // Method to add a member
+    public void addMember(int memberId) {
+        if (!memberIds.contains(memberId)) {
+            memberIds.add(memberId);
+        }
+    }
+    
+    // Method to remove a member
+    public void removeMember(int memberId) {
+        memberIds.remove(Integer.valueOf(memberId));
+    }
 }
