@@ -5,10 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/bubblepop"; // Change `bubblepop` to your actual DB
-                                                                               // name
-    private static final String USER = "root"; // Change this to your database username
-    private static final String PASSWORD = "root"; // Change this to your database password
+    private static final String URL = "jdbc:mysql://192.168.1.100:3306/bubblepop?useSSL=false&allowPublicKeyRetrieval=true";
+    private static final String USER = "user1";
+    private static final String PASSWORD = "password";
 
     private static Connection connection;
 
