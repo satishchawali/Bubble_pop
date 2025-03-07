@@ -17,6 +17,8 @@ public class RegisterScreen extends JFrame {
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         JLabel titleLabel = new JLabel("Create Your Account", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 30));

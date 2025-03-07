@@ -15,6 +15,8 @@ public class HomePage extends JFrame {
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Home", createHomeTab());
@@ -29,34 +31,74 @@ public class HomePage extends JFrame {
         setVisible(true);
     }
 
-    // Home Tab: Simple welcome screen.
     private JPanel createHomeTab() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel welcomeLabel = new JLabel("Welcome, " + user.getUsername() + "!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
-        welcomeLabel.setForeground(new Color(50, 205, 50));
-        panel.add(welcomeLabel, BorderLayout.CENTER);
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                Color color1 = new Color(23, 23, 23);
+                Color color2 = new Color(50, 50, 50);
+                GradientPaint gp = new GradientPaint(0, 0, color1, getWidth(), getHeight(), color2);
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(new BorderLayout());
+
+        JLabel welcomeLabel = new JLabel("🎉 Welcome, " + user.getUsername() + "!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 40));
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+
+        JLabel subtitleLabel = new JLabel("🚀 Explore new adventures and features!", SwingConstants.CENTER);
+        subtitleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        subtitleLabel.setForeground(new Color(230, 230, 230));
+
+        JPanel textPanel = new JPanel(new GridLayout(2, 1));
+        textPanel.setOpaque(false);
+        textPanel.add(welcomeLabel);
+        textPanel.add(subtitleLabel);
+
+        JButton exploreButton = new JButton("✨ Explore Now ✨");
+        exploreButton.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
+        exploreButton.setBackground(new Color(255, 69, 0));
+        exploreButton.setForeground(Color.WHITE);
+        exploreButton.setFocusPainted(false);
+        exploreButton.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
+        exploreButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        exploreButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exploreButton.setBackground(new Color(255, 99, 71));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exploreButton.setBackground(new Color(255, 69, 0));
+            }
+        });
+
+        exploreButton.addActionListener(
+                e -> JOptionPane.showMessageDialog(panel, "🌟 Welcome to Bubble Pop! Start your journey now!"));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0)); // Bottom Padding
+        buttonPanel.add(exploreButton);
+
+        panel.add(textPanel, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
         return panel;
     }
 
-    // Chats Tab: Contains a chat list and a chat window (split view).
     private JPanel createChatsTab() {
         JPanel chatsPanel = new JPanel(new BorderLayout());
 
-        // Left panel: Chat list
-        DefaultListModel<String> chatListModel = new DefaultListModel<>();
-        chatListModel.addElement("General Chat");
-        chatListModel.addElement("Sports Chat");
-        chatListModel.addElement("Movies Chat");
-        chatListModel.addElement("Music Chat");
-        JList<String> chatList = new JList<>(chatListModel);
-        chatList.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane chatListScrollPane = new JScrollPane(chatList);
-        chatListScrollPane.setPreferredSize(new Dimension(200, 0));
-
-        // Right panel: Chat window
         JPanel chatWindowPanel = new JPanel(new BorderLayout());
+
         JPanel headerPanel = new JPanel();
         headerPanel.setBackground(new Color(50, 50, 50));
         JLabel chatRoomLabel = new JLabel("Select a chat room", SwingConstants.CENTER);
@@ -84,89 +126,63 @@ public class HomePage extends JFrame {
         inputPanel.add(sendButton, BorderLayout.EAST);
         chatWindowPanel.add(inputPanel, BorderLayout.SOUTH);
 
-        // Update chat window when a chat room is selected.
-        chatList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                String selectedChat = chatList.getSelectedValue();
-                if (selectedChat != null) {
-                    chatRoomLabel.setText(selectedChat + " Room");
-                    chatArea.setText(""); // Clear previous messages.
-                    // TODO: Load chat history for the selected room.
-                }
-            }
+        ChatListScreen chatListPanel = new ChatListScreen(selectedChatRoom -> {
+            chatRoomLabel.setText(selectedChatRoom + " Room");
+            chatArea.setText("");
         });
 
-        // Action to send message.
-        ActionListener sendAction = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String message = messageField.getText().trim();
-                if (!message.isEmpty()) {
-                    chatArea.append("You: " + message + "\n");
-                    messageField.setText("");
-                    // TODO: Integrate real-time messaging by sending the message via WebSocket or
-                    // similar.
-                }
+        sendButton.addActionListener(e -> {
+            String message = messageField.getText().trim();
+            if (!message.isEmpty()) {
+                chatArea.append("You: " + message + "\n");
+                messageField.setText("");
             }
-        };
-        sendButton.addActionListener(sendAction);
-        messageField.addActionListener(sendAction);
+        });
+        messageField.addActionListener(e -> sendButton.doClick());
 
-        // Combine chat list and chat window in a split pane.
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatListScrollPane, chatWindowPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatListPanel, chatWindowPanel);
         splitPane.setDividerLocation(200);
         chatsPanel.add(splitPane, BorderLayout.CENTER);
+
         return chatsPanel;
     }
 
-    // Feeds Tab: Feed content with FeedPage panel.
     private JPanel createFeedsTab() {
         JPanel feedsPanel = new JPanel(new BorderLayout());
 
-        // Optional: Add a header label for the feeds tab.
         JLabel headerLabel = new JLabel("Feeds", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
         headerLabel.setForeground(new Color(50, 205, 50));
         feedsPanel.add(headerLabel, BorderLayout.NORTH);
 
-        // Add the FeedPage panel to display feed posts.
         FeedPage feedPage = new FeedPage();
         feedsPanel.add(feedPage, BorderLayout.CENTER);
 
         return feedsPanel;
     }
 
-    // Profile Tab: Display ProfilePanel in HomePage.
     private JPanel createProfileTab() {
-        // Assuming 'user' is a member variable in HomePage.
         return new ProfilePage(user);
     }
 
-    // File Sharing Tab: Display FileSharingPanel in HomePage.
     private JPanel createFileSharingTab() {
         JPanel fileSharingPanel = new JPanel(new BorderLayout());
         fileSharingPanel.add(new FileSharingUI(), BorderLayout.CENTER);
         return fileSharingPanel;
     }
-// Friend Requests Tab: Display FriendRequestsPanel in HomePage.
-private JPanel createFriendRequestsTab() {
-    JPanel friendRequestsPanel = new JPanel(new BorderLayout());
-    friendRequestsPanel.add(new FriendRequestUI(), BorderLayout.CENTER);
-    return friendRequestsPanel;
-}
 
-// Settings Tab: Display SettingsPage in HomePage.
-private JPanel createSettingsTab() {
-    JPanel settingsPanel = new JPanel(new BorderLayout());
-    settingsPanel.add(new SettingsPage(), BorderLayout.CENTER);
-    return settingsPanel;
-}
+    private JPanel createFriendRequestsTab() {
+        JPanel friendRequestsPanel = new JPanel(new BorderLayout());
+        friendRequestsPanel.add(new FriendRequestUI(), BorderLayout.CENTER);
+        return friendRequestsPanel;
+    }
 
+    private JPanel createSettingsTab() {
+        JPanel settingsPanel = new JPanel(new BorderLayout());
+        settingsPanel.add(new SettingsPage(), BorderLayout.CENTER);
+        return settingsPanel;
+    }
 
     public static void main(String[] args) {
-        // For demonstration, create a dummy user. Adjust this according to your actual
-        // User class.
-        User dummyUser = new User();
-        new HomePage(dummyUser);
     }
 }

@@ -11,7 +11,9 @@ public class WelcomeScreen extends JFrame {
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
-        
+        setResizable(false); // Prevent maximizing
+        setLocationRelativeTo(null); // Center the window on screen
+
         JLabel welcomeLabel = new JLabel("WELCOME to Bubble Pop!!", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
         welcomeLabel.setForeground(new Color(255, 105, 180));

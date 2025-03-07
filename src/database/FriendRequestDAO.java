@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;   // Needed for converting java.util.Date to SQL Timestamp
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.FriendRequest;
@@ -21,7 +21,6 @@ public class FriendRequestDAO {
             stmt.setInt(2, request.getReceiverId());
             stmt.setString(3, request.getStatus());
     
-            // Handle null requestDate by setting it to the current timestamp
             Date currentDate = request.getRequestDate() != null ? request.getRequestDate() : new Date();
             stmt.setTimestamp(4, new Timestamp(currentDate.getTime()));
     
@@ -69,7 +68,6 @@ public class FriendRequestDAO {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // rs.getTimestamp returns a java.sql.Timestamp, which is a subclass of java.util.Date
                     return new FriendRequest(
                         rs.getInt("id"),
                         rs.getInt("sender_id"),
@@ -137,7 +135,7 @@ public class FriendRequestDAO {
     
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // If count > 0, request already exists
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {

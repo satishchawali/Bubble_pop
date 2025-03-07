@@ -11,18 +11,15 @@ public class SettingsPage extends JPanel {
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Header Label
         JLabel headerLabel = new JLabel("Settings", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
         headerLabel.setForeground(new Color(50, 205, 50));
         add(headerLabel, BorderLayout.NORTH);
 
-        // Content Panel for settings controls
         JPanel contentPanel = new JPanel();
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        // 1. Theme Selection Panel
         JPanel themePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         themePanel.setBackground(Color.WHITE);
         JLabel themeLabel = new JLabel("Theme:");
@@ -33,7 +30,6 @@ public class SettingsPage extends JPanel {
         themeCombo.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         themePanel.add(themeCombo);
 
-        // 2. Notifications Panel
         JPanel notificationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         notificationsPanel.setBackground(Color.WHITE);
         JCheckBox notificationsCheckBox = new JCheckBox("Enable Notifications");
@@ -41,7 +37,6 @@ public class SettingsPage extends JPanel {
         notificationsCheckBox.setBackground(Color.WHITE);
         notificationsPanel.add(notificationsCheckBox);
 
-        // 3. Privacy Panel
         JPanel privacyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         privacyPanel.setBackground(Color.WHITE);
         JLabel privacyLabel = new JLabel("Profile Visibility:");
@@ -64,7 +59,6 @@ public class SettingsPage extends JPanel {
         privacyPanel.add(friendsOnlyBtn);
         privacyPanel.add(privateBtn);
 
-        // Add settings panels to contentPanel with spacing
         contentPanel.add(themePanel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         contentPanel.add(notificationsPanel);
@@ -73,7 +67,6 @@ public class SettingsPage extends JPanel {
 
         add(contentPanel, BorderLayout.CENTER);
 
-        // Footer Panel with Save Settings button
         JPanel footerPanel = new JPanel();
         footerPanel.setBackground(Color.WHITE);
         JButton saveButton = new JButton("Save Settings");
@@ -83,6 +76,5 @@ public class SettingsPage extends JPanel {
         footerPanel.add(saveButton);
         add(footerPanel, BorderLayout.SOUTH);
 
-        // TODO: Add action listeners for saveButton to process the settings.
     }
 }
