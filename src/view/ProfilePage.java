@@ -18,20 +18,17 @@ public class ProfilePage extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // Header
         JLabel headerLabel = new JLabel("Profile", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
         headerLabel.setForeground(new Color(50, 205, 50));
         add(headerLabel, BorderLayout.NORTH);
 
-        // Form Panel for displaying username and email.
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Username label and field.
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("Username:"), gbc);
@@ -40,7 +37,6 @@ public class ProfilePage extends JPanel {
         usernameField.setEditable(false);
         formPanel.add(usernameField, gbc);
 
-        // Email label and field.
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(new JLabel("Email:"), gbc);
@@ -51,7 +47,6 @@ public class ProfilePage extends JPanel {
 
         add(formPanel, BorderLayout.CENTER);
 
-        // Button Panel for actions.
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         updateButton = new JButton("Update Profile");
@@ -59,7 +54,6 @@ public class ProfilePage extends JPanel {
         logoutButton = new JButton("Logout");
         saveUpdate = new JButton("Save");
 
-        // Style buttons.
         updateButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         deleteButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         logoutButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
@@ -71,11 +65,9 @@ public class ProfilePage extends JPanel {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Action for updating profile.
         updateButton.addActionListener(e -> {
             usernameField.setEditable(true);
             emailField.setEditable(true);
-            // Add saveUpdate button if not already added.
             if (!isButtonInPanel(buttonPanel, saveUpdate)) {
                 buttonPanel.add(saveUpdate);
                 buttonPanel.revalidate();
@@ -83,7 +75,6 @@ public class ProfilePage extends JPanel {
             }
         });
 
-        // Action for saving updates.
         saveUpdate.addActionListener(e -> {
             String newUsername = usernameField.getText();
             String newEmail = emailField.getText();
@@ -100,7 +91,6 @@ public class ProfilePage extends JPanel {
             }
         });
 
-        // Action for deleting account.
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete your account?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
@@ -108,7 +98,6 @@ public class ProfilePage extends JPanel {
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "Account Deleted Successfully!");
                     new LoginScreen();
-                    // Close the parent frame if needed.
                     SwingUtilities.getWindowAncestor(this).dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to Delete Account!");
@@ -116,14 +105,11 @@ public class ProfilePage extends JPanel {
             }
         });
 
-        // Action for logging out.
         logoutButton.addActionListener(e -> {
             new LoginScreen();
             SwingUtilities.getWindowAncestor(this).dispose();
         });
     }
-
-    // Helper method to check if a button is already in a panel.
     private boolean isButtonInPanel(JPanel panel, JButton button) {
         for (Component comp : panel.getComponents()) {
             if (comp.equals(button)) {

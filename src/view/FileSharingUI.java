@@ -8,7 +8,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.datatransfer.*;
-import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,13 +29,11 @@ public class FileSharingUI extends JPanel {
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Header Label
         JLabel headerLabel = new JLabel("File Sharing", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
         headerLabel.setForeground(new Color(50, 205, 50));
         add(headerLabel, BorderLayout.NORTH);
 
-        // Initialize FileShareController using a database connection.
         try {
             Connection conn = DatabaseConnection.getConnection();
             fileShareController = new FileShareController(conn);
@@ -45,14 +42,12 @@ public class FileSharingUI extends JPanel {
             e.printStackTrace();
         }
 
-        // Main Content Panel using GridBagLayout
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // User ID Field
         JLabel userIdLabel = new JLabel("User ID:");
         userIdLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         gbc.gridx = 0;
@@ -65,7 +60,6 @@ public class FileSharingUI extends JPanel {
         gbc.gridy = 0;
         contentPanel.add(userIdField, gbc);
 
-        // File Label
         JLabel fileLabelTitle = new JLabel("Selected File:");
         fileLabelTitle.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         gbc.gridx = 0;
@@ -79,7 +73,6 @@ public class FileSharingUI extends JPanel {
         gbc.gridy = 1;
         contentPanel.add(fileLabel, gbc);
 
-        // Drop Zone Panel for drag & drop file selection
         dropZonePanel = new JPanel();
         dropZonePanel.setPreferredSize(new Dimension(300, 100));
         dropZonePanel.setBackground(new Color(230, 230, 250));
@@ -94,7 +87,6 @@ public class FileSharingUI extends JPanel {
         contentPanel.add(dropZonePanel, gbc);
         gbc.gridwidth = 1;
 
-        // Add DropTarget listener to enable drag & drop functionality.
         new DropTarget(dropZonePanel, new DropTargetAdapter() {
             @Override
             public void drop(DropTargetDropEvent dtde) {
@@ -121,7 +113,6 @@ public class FileSharingUI extends JPanel {
             }
         });
 
-        // Buttons Panel
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(Color.WHITE);
 
@@ -170,15 +161,12 @@ public class FileSharingUI extends JPanel {
             return;
         }
         try {
-            // Create destination directory if it doesn't exist.
-            File destDir = new File("assets/shared_files");
+            File destDir = new File("uploads");
             if (!destDir.exists()) {
                 destDir.mkdirs();
             }
-            // Copy the file to the destination folder.
             File destFile = new File(destDir, selectedFile.getName());
             Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            // Save file data to the database.
             fileShareController.uploadFile(selectedFile.getName(), destFile.getAbsolutePath(), userId);
             JOptionPane.showMessageDialog(this, "File uploaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {

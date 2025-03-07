@@ -27,12 +27,10 @@ public class FriendRequestController {
         return friendRequestDAO.createFriendRequest(request);
     }
 
-    // Accept a friend request
     public boolean acceptFriendRequest(int requestId) {
         return friendRequestDAO.updateFriendRequestStatus(requestId, "ACCEPTED");
     }
 
-    // Reject a friend request
     public boolean rejectFriendRequest(int requestId) {
         return friendRequestDAO.updateFriendRequestStatus(requestId, "REJECTED");
     }
@@ -56,7 +54,7 @@ public List<FriendRequest> getFriendRequestsForUser(int userId) {
                     rs.getInt("sender_id"),
                     rs.getInt("receiver_id"),
                     rs.getString("status"),
-                    rs.getTimestamp("request_date") // Converts SQL Timestamp to Java Date
+                    rs.getTimestamp("request_date")
                 );
                 requests.add(request);
             }

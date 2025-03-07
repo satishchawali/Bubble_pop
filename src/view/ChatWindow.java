@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 
 public class ChatWindow extends JPanel {
     private JLabel chatRoomLabel;
@@ -13,7 +13,6 @@ public class ChatWindow extends JPanel {
     public ChatWindow() {
         setLayout(new BorderLayout());
         
-        // Header with chat room name
         JPanel headerPanel = new JPanel();
         headerPanel.setBackground(new Color(50, 50, 50));
         chatRoomLabel = new JLabel("Select a chat room", SwingConstants.CENTER);
@@ -22,16 +21,13 @@ public class ChatWindow extends JPanel {
         headerPanel.add(chatRoomLabel);
         add(headerPanel, BorderLayout.NORTH);
         
-        // Chat area for messages
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         chatArea.setWrapStyleWord(true);
         chatArea.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-        JScrollPane scrollPane = new JScrollPane(chatArea);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(chatArea), BorderLayout.CENTER);
         
-        // Input area for new messages
         JPanel inputPanel = new JPanel(new BorderLayout());
         messageField = new JTextField();
         messageField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
@@ -43,28 +39,20 @@ public class ChatWindow extends JPanel {
         inputPanel.add(sendButton, BorderLayout.EAST);
         add(inputPanel, BorderLayout.SOUTH);
         
-        // Action listeners for sending messages
-        ActionListener sendAction = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendMessage();
-            }
-        };
-        sendButton.addActionListener(sendAction);
-        messageField.addActionListener(sendAction);
+        sendButton.addActionListener(this::sendMessage);
+        messageField.addActionListener(this::sendMessage);
     }
     
     public void setChatRoom(String chatRoom) {
         chatRoomLabel.setText(chatRoom + " Room");
-        chatArea.setText(""); // Optionally clear or load chat history
+        chatArea.setText("");
     }
     
-    private void sendMessage() {
+    private void sendMessage(ActionEvent e) {
         String message = messageField.getText().trim();
         if (!message.isEmpty()) {
             chatArea.append("You: " + message + "\n");
             messageField.setText("");
-            // TODO: Integrate real-time messaging logic here (e.g., sending via WebSocket)
         }
     }
 }
