@@ -1,17 +1,13 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import model.FriendRequest;
 
 public class FriendRequestDAO {
+    
+    // ✅ Create a new friend request
     public boolean createFriendRequest(FriendRequest request) {
         String sql = "INSERT INTO friend_requests (sender_id, receiver_id, status, request_date) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -20,9 +16,7 @@ public class FriendRequestDAO {
             stmt.setInt(1, request.getSenderId());
             stmt.setInt(2, request.getReceiverId());
             stmt.setString(3, request.getStatus());
-    
-            Date currentDate = request.getRequestDate() != null ? request.getRequestDate() : new Date();
-            stmt.setTimestamp(4, new Timestamp(currentDate.getTime()));
+            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis())); // Use current timestamp
     
             int affectedRows = stmt.executeUpdate();
     
@@ -44,6 +38,35 @@ public class FriendRequestDAO {
         }
     }
 
+    // ✅ Get all PENDING friend requests for a user
+    public List<FriendRequest> getPendingRequestsForUser(int userId) {
+        List<FriendRequest> pendingRequests = new ArrayList<>();
+        String sql = "SELECT * FROM friend_requests WHERE receiver_id = ? AND status = 'PENDING'";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    
+            stmt.setInt(1, userId);
+    
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    pendingRequests.add(new FriendRequest(
+                        rs.getInt("id"),
+                        rs.getInt("sender_id"),
+                        rs.getInt("receiver_id"),
+                        rs.getString("status"),
+                        rs.getTimestamp("request_date")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return pendingRequests;
+    }
+
+    // ✅ Update the status of a friend request
     public boolean updateFriendRequestStatus(int requestId, String newStatus) {
         String sql = "UPDATE friend_requests SET status = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -52,14 +75,14 @@ public class FriendRequestDAO {
             stmt.setString(1, newStatus);
             stmt.setInt(2, requestId);
 
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
+    // ✅ Retrieve a specific friend request by ID
     public FriendRequest getFriendRequestById(int id) {
         String sql = "SELECT * FROM friend_requests WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -83,20 +106,21 @@ public class FriendRequestDAO {
         return null;
     }
 
+    // ✅ Delete a friend request
     public boolean deleteFriendRequest(int id) {
         String sql = "DELETE FROM friend_requests WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, id);
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
+    // ✅ Get all friend requests for a specific user (sent or received)
     public List<FriendRequest> getFriendRequestsForUser(int userId) {
         List<FriendRequest> requests = new ArrayList<>();
         String sql = "SELECT * FROM friend_requests WHERE sender_id = ? OR receiver_id = ?";
@@ -108,14 +132,13 @@ public class FriendRequestDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    FriendRequest request = new FriendRequest(
+                    requests.add(new FriendRequest(
                         rs.getInt("id"),
                         rs.getInt("sender_id"),
                         rs.getInt("receiver_id"),
                         rs.getString("status"),
                         rs.getTimestamp("request_date")
-                    );
-                    requests.add(request);
+                    ));
                 }
             }
         } catch (SQLException e) {
@@ -124,6 +147,7 @@ public class FriendRequestDAO {
         return requests;
     }
 
+    // ✅ Check if a pending request already exists between two users
     public boolean requestExists(int senderId, int receiverId) {
         String sql = "SELECT COUNT(*) FROM friend_requests WHERE sender_id = ? AND receiver_id = ? AND status = 'PENDING'";
         
@@ -144,5 +168,4 @@ public class FriendRequestDAO {
         
         return false;
     }
-    
 }
