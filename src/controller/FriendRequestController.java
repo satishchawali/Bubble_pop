@@ -1,26 +1,23 @@
 package controller;
 
-import database.DatabaseConnection;
 import database.FriendRequestDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import database.UserDAO;
 import model.FriendRequest;
+import model.User;
+
+import java.util.List;
 
 public class FriendRequestController {
     private FriendRequestDAO friendRequestDAO;
+    private UserDAO userDAO;
 
     public FriendRequestController() {
         this.friendRequestDAO = new FriendRequestDAO();
+        this.userDAO = new UserDAO();
     }
 
-    // Send a friend request
     public boolean sendFriendRequest(int senderId, int receiverId) {
         if (friendRequestDAO.requestExists(senderId, receiverId)) {
-            System.out.println("Friend request already sent.");
             return false;
         }
         FriendRequest request = new FriendRequest(0, senderId, receiverId, "PENDING", null);
@@ -35,35 +32,11 @@ public class FriendRequestController {
         return friendRequestDAO.updateFriendRequestStatus(requestId, "REJECTED");
     }
 
-
-
-public List<FriendRequest> getFriendRequestsForUser(int userId) {
-    List<FriendRequest> requests = new ArrayList<>();
-    String sql = "SELECT * FROM friend_requests WHERE sender_id = ? OR receiver_id = ?";
-
-    try (Connection conn = DatabaseConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, userId);
-        stmt.setInt(2, userId);
-
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                FriendRequest request = new FriendRequest(
-                    rs.getInt("id"),
-                    rs.getInt("sender_id"),
-                    rs.getInt("receiver_id"),
-                    rs.getString("status"),
-                    rs.getTimestamp("request_date")
-                );
-                requests.add(request);
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
+    public List<User> getAllUsersExcept(int userId) {
+        return userDAO.getAllUsersExcept(userId);
     }
-    return requests;
-}
 
+    public List<FriendRequest> getPendingRequests(int userId) {
+        return friendRequestDAO.getPendingRequestsForUser(userId);
+    }
 }
-   

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class UserDAO {
 
+    // ✅ Create a new user
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -29,13 +30,14 @@ public class UserDAO {
             }
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error creating user: " + e.getMessage());
             return false;
         }
     }
 
+    // ✅ Retrieve a user by ID
     public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT id, username, email FROM users WHERE id = ?"; // Excluding password for security
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -46,38 +48,65 @@ public class UserDAO {
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("email"),
-                        rs.getString("password_hash")
+                        null // Exclude password for security
                     );
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error fetching user: " + e.getMessage());
         }
         return null;
     }
 
-    public List<User> getAllUsers() {
+    // ✅ Retrieve all users (including passwords for authentication)
+public List<User> getAllUsers() {
+    List<User> users = new ArrayList<>();
+    String sql = "SELECT id, username, email, password_hash FROM users"; // Now including password
+
+    try (Connection conn = DatabaseConnection.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+
+        while (rs.next()) {
+            users.add(new User(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("password_hash") // Include password
+            ));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching users: " + e.getMessage());
+    }
+    return users;
+}
+
+    // ✅ Retrieve all users except the logged-in user
+    public List<User> getAllUsersExcept(int userId) {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT id, username, email FROM users WHERE id != ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            while (rs.next()) {
-                users.add(new User(
-                    rs.getInt("id"),
-                    rs.getString("username"),
-                    rs.getString("email"),
-                    rs.getString("password_hash")
-                ));
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        null // Exclude password
+                    ));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error fetching users except self: " + e.getMessage());
         }
         return users;
     }
 
+    // ✅ Update user details
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET username = ?, email = ?, password_hash = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -90,11 +119,12 @@ public class UserDAO {
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error updating user: " + e.getMessage());
             return false;
         }
     }
 
+    // ✅ Delete a user by ID
     public boolean deleteUser(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -103,7 +133,7 @@ public class UserDAO {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error deleting user: " + e.getMessage());
             return false;
         }
     }
