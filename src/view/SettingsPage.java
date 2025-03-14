@@ -52,7 +52,7 @@ public class SettingsPage {
         // Content Panel
         contentPanel = new JPanel();
         contentPanel.setBounds(220, 30, 550, 400);
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBackground(new Color(245, 237, 237)) ;
         contentPanel.setLayout(null);
         contentPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 200, 210), 2));
         frame.add(contentPanel);
