@@ -1,10 +1,9 @@
 package view;
 
 import model.User;
-
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.Socket;
 
@@ -22,37 +21,55 @@ public class ChatView extends JFrame {
 
     public ChatView(User user) {
         this.user = user;
-
-        setTitle("Chat - " + user.getUsername());
-        setSize(600, 400);
+        setTitle("Chats - Bubble Pop");
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         setLayout(new BorderLayout());
 
-        // User list panel
+        // Sidebar for Friends List
+        JPanel userPanel = new JPanel(new BorderLayout());
+        userPanel.setPreferredSize(new Dimension(250, 500));
+        userPanel.setBackground(new Color(100, 130, 173));
+        userPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        JLabel userLabel = new JLabel("Friends", SwingConstants.CENTER);
+        userLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        userLabel.setForeground(Color.WHITE);
+        userPanel.add(userLabel, BorderLayout.NORTH);
+
         userModel = new DefaultListModel<>();
         userList = new JList<>(userModel);
+        userList.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         JScrollPane userScroll = new JScrollPane(userList);
-        add(userScroll, BorderLayout.WEST);
+        userPanel.add(userScroll, BorderLayout.CENTER);
+        add(userPanel, BorderLayout.WEST);
 
-        userList.addListSelectionListener(e -> selectedUser = userList.getSelectedValue());
+        // Chat Area
+        JPanel chatPanel = new JPanel(new BorderLayout());
+        chatPanel.setBackground(Color.WHITE);
 
-        // Chat area
         chatArea = new JTextArea();
         chatArea.setEditable(false);
-        add(new JScrollPane(chatArea), BorderLayout.CENTER);
+        chatArea.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        chatArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JScrollPane chatScroll = new JScrollPane(chatArea);
+        chatPanel.add(chatScroll, BorderLayout.CENTER);
 
-        // Input panel
+        // Input Panel
         JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
         messageField = new JTextField();
+        messageField.setFont(new Font("SansSerif", Font.PLAIN, 16));
         sendButton = new JButton("Send");
+        sendButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+        sendButton.setBackground(new Color(37, 211, 102));
+        sendButton.setForeground(Color.WHITE);
         inputPanel.add(messageField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
-        add(inputPanel, BorderLayout.SOUTH);
+        chatPanel.add(inputPanel, BorderLayout.SOUTH);
 
-        sendButton.addActionListener(e -> sendMessage());
-
+        add(chatPanel, BorderLayout.CENTER);
         connectToServer();
         setVisible(true);
     }
@@ -84,23 +101,11 @@ public class ChatView extends JFrame {
         }
     }
 
-    private void sendMessage() {
-        String message = messageField.getText().trim();
-        if (!message.isEmpty()) {
-            if (selectedUser != null) {
-                out.println("@" + selectedUser + " " + message);
-            } else {
-                out.println(message);
-            }
-            messageField.setText("");
-        }
-    }
-
     private void updateUserList(String users) {
         userModel.clear();
-        for (String user : users.split(",")) {
-            if (!user.equals(this.user.getUsername())) {
-                userModel.addElement(user);
+        for (String username : users.split(",")) {
+            if (!username.equals(this.user.getUsername())) {
+                userModel.addElement(username);
             }
         }
     }

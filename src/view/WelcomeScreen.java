@@ -7,31 +7,45 @@ public class WelcomeScreen extends JFrame {
     private JButton getStartedButton;
 
     public WelcomeScreen() {
-        setTitle("Welcome - Bubble Pop");
-        setSize(800, 500);
+        setTitle("Welcome - Flicksy");
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
-        setResizable(false); // Prevent maximizing
-        setLocationRelativeTo(null); // Center the window on screen
+        setResizable(false);
+        setLocationRelativeTo(null);
 
-        JLabel welcomeLabel = new JLabel("WELCOME to Bubble Pop!!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
-        welcomeLabel.setForeground(new Color(255, 105, 180));
-        welcomeLabel.setBounds(150, 100, 500, 50);
-        add(welcomeLabel);
+        // Left Panel (Branding)
+        JPanel leftPanel = new JPanel();
+        leftPanel.setBounds(0, 0, 450, 500);
+        leftPanel.setBackground(new Color(100, 130, 173));
+        leftPanel.setLayout(null);
+        add(leftPanel);
+
+        JLabel welcomeLabel = new JLabel("Welcome to Flicksy!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBounds(50, 150, 350, 50);
+        leftPanel.add(welcomeLabel);
 
         JLabel taglineLabel = new JLabel("Make every moment special!", SwingConstants.CENTER);
-        taglineLabel.setFont(new Font("Comic Sans MS", Font.ITALIC, 20));
-        taglineLabel.setForeground(Color.GRAY);
-        taglineLabel.setBounds(150, 150, 500, 30);
-        add(taglineLabel);
+        taglineLabel.setFont(new Font("SansSerif", Font.ITALIC, 16));
+        taglineLabel.setForeground(Color.WHITE);
+        taglineLabel.setBounds(50, 200, 350, 50);
+        leftPanel.add(taglineLabel);
+
+        // Right Panel (Button Section)
+        JPanel rightPanel = new JPanel();
+        rightPanel.setBounds(450, 0, 450, 500);
+        rightPanel.setBackground(new Color(226, 218, 214));
+        rightPanel.setLayout(null);
+        add(rightPanel);
 
         getStartedButton = new JButton("Get Started");
-        getStartedButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        getStartedButton.setBounds(300, 250, 200, 50);
-        getStartedButton.setBackground(new Color(50, 205, 50));
+        getStartedButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+        getStartedButton.setBounds(125, 200, 200, 50);
+        getStartedButton.setBackground(new Color(100, 130, 173));
         getStartedButton.setForeground(Color.WHITE);
-        add(getStartedButton);
+        rightPanel.add(getStartedButton);
 
         getStartedButton.addActionListener(e -> switchToLogin());
 
