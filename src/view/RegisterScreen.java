@@ -13,71 +13,65 @@ public class RegisterScreen extends JFrame {
     public RegisterScreen() {
         authController = new AuthController();
 
-        setTitle("Register - Bubble Pop");
-        setSize(800, 500);
+        setTitle("Register - Flicksy");
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setResizable(false);
         setLocationRelativeTo(null);
 
-        JLabel titleLabel = new JLabel("Create Your Account", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
-        titleLabel.setForeground(new Color(255, 105, 180));
-        titleLabel.setBounds(150, 50, 500, 50);
-        add(titleLabel);
+        // Left Panel
+        JPanel leftPanel = new JPanel();
+        leftPanel.setBounds(0, 0, 450, 500);
+        leftPanel.setBackground(new Color(100, 130, 173));
+        leftPanel.setLayout(null);
+        add(leftPanel);
 
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        usernameLabel.setBounds(200, 120, 150, 30);
-        add(usernameLabel);
-        
+        JLabel welcomeLabel = new JLabel("Join Flicksy!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBounds(50, 150, 350, 50);
+        leftPanel.add(welcomeLabel);
+
+        // Right Panel
+        JPanel registerPanel = new JPanel();
+        registerPanel.setBounds(450, 0, 450, 500);
+        registerPanel.setBackground(new Color(226, 218, 214));
+        registerPanel.setLayout(null);
+        add(registerPanel);
+
+        JLabel signUpLabel = new JLabel("Sign Up");
+        signUpLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        signUpLabel.setBounds(175, 40, 120, 40);
+        registerPanel.add(signUpLabel);
+
         usernameField = new JTextField();
-        usernameField.setBounds(350, 120, 250, 30);
-        add(usernameField);
-
-        JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        emailLabel.setBounds(200, 170, 150, 30);
-        add(emailLabel);
+        usernameField.setBounds(75, 130, 300, 40);
+        registerPanel.add(usernameField);
 
         emailField = new JTextField();
-        emailField.setBounds(350, 170, 250, 30);
-        add(emailField);
-
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        passwordLabel.setBounds(200, 220, 150, 30);
-        add(passwordLabel);
+        emailField.setBounds(75, 210, 300, 40);
+        registerPanel.add(emailField);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(350, 220, 250, 30);
-        add(passwordField);
+        passwordField.setBounds(75, 290, 300, 40);
+        registerPanel.add(passwordField);
 
-        registerButton = new JButton("Register");
-        registerButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        registerButton.setBounds(250, 300, 150, 50);
-        registerButton.setBackground(new Color(50, 205, 50));
+        registerButton = new JButton("Sign Up");
+        registerButton.setBounds(75, 350, 300, 45);
+        registerButton.setBackground(new Color(100, 130, 173));
         registerButton.setForeground(Color.WHITE);
-        add(registerButton);
+        registerPanel.add(registerButton);
 
-        backButton = new JButton("Back to Login");
-        backButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        backButton.setBounds(450, 300, 200, 50);
-        backButton.setBackground(Color.LIGHT_GRAY);
-        add(backButton);
+        backButton = new JButton("Back");
+        backButton.setBounds(350, 400, 100, 30);
+        backButton.setBackground(Color.GRAY);
+        backButton.setForeground(Color.WHITE);
+        registerPanel.add(backButton);
 
         registerButton.addActionListener(e -> {
-            String username = usernameField.getText();
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-
-            if (authController.register(username, email, password)) {
-                JOptionPane.showMessageDialog(this, "Registration Successful!");
-                new LoginScreen();
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Registration Failed!");
-            }
+            new LoginScreen();
+            dispose();
         });
 
         backButton.addActionListener(e -> {
@@ -86,9 +80,5 @@ public class RegisterScreen extends JFrame {
         });
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new RegisterScreen();
     }
 }
