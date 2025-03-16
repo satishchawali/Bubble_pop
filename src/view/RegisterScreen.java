@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RegisterScreen extends JFrame {
+    private JLabel UserName,EmailId,Password;
     private JTextField usernameField, emailField;
     private JPasswordField passwordField;
     private JButton registerButton, backButton;

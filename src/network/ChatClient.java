@@ -10,13 +10,16 @@ public class ChatClient {
     private BufferedReader in;
     private String username;
 
-    public ChatClient(String address, int port, String username) {
-        this.username = username;
+    public ChatClient(String address, int port) {
         try {
+            // Take username input dynamically
+            inputConsole = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Enter your username: ");
+            username = inputConsole.readLine();
+
             socket = new Socket(address, port);
             System.out.println("Connected to the chat server");
 
-            inputConsole = new BufferedReader(new InputStreamReader(System.in));
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -24,7 +27,7 @@ public class ChatClient {
             out.println(username);
 
             // Start a new thread to listen for messages from the server
-            new Thread(() -> {
+            Thread listenerThread = new Thread(() -> {
                 try {
                     String serverMessage;
                     while ((serverMessage = in.readLine()) != null) {
@@ -35,25 +38,42 @@ public class ChatClient {
                         }
                     }
                 } catch (IOException e) {
-                    System.out.println("Disconnected from server.");
+                    System.out.println("Server connection lost.");
+                } finally {
+                    closeResources();
                 }
-            }).start();
+            });
+            listenerThread.start();
 
+            // Read user input and send messages
             String userMessage;
-            while (!(userMessage = inputConsole.readLine()).equalsIgnoreCase("exit")) {
+            while (true) {
+                userMessage = inputConsole.readLine();
+                if (userMessage.equalsIgnoreCase("exit")) {
+                    out.println("EXIT:" + username);  // Notify server
+                    break;
+                }
                 out.println(userMessage);
             }
 
-            socket.close();
-            inputConsole.close();
-            out.close();
-            in.close();
+            closeResources();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
+    private void closeResources() {
+        try {
+            if (socket != null) socket.close();
+            if (inputConsole != null) inputConsole.close();
+            if (out != null) out.close();
+            if (in != null) in.close();
+        } catch (IOException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        }
+    }
+
     public static void main(String args[]) {
-        new ChatClient("127.0.0.1", 5000, "User1");
+        new ChatClient("127.0.0.1", 5000);
     }
 }
