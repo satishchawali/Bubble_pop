@@ -9,7 +9,7 @@ public class UserDAO {
 
     // ✅ Create a new user
     public boolean createUser(User user) {
-        String sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (username, email, password_hash, ) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
