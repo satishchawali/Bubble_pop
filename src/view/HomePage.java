@@ -5,7 +5,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
-import java.sql.Connection;
 
 public class HomePage {
     private User user;
@@ -24,7 +23,6 @@ public class HomePage {
         frame.setLayout(null);
         frame.getContentPane().setBackground(Color.WHITE);
 
-        // Top Panel (Header)
         JPanel topPanel = new JPanel();
         topPanel.setBounds(0, 0, 900, 100);
         topPanel.setBackground(new Color(100, 130, 173));
@@ -43,21 +41,18 @@ public class HomePage {
         subLabel.setBounds(650, 50, 200, 20);
         topPanel.add(subLabel);
 
-        // Tagline
         JLabel tagline = new JLabel("Stay connected with Flicksy!", SwingConstants.LEFT);
         tagline.setFont(new Font("SansSerif", Font.BOLD, 14));
         tagline.setForeground(new Color(50, 50, 100));
         tagline.setBounds(20, 110, 300, 20);
         frame.add(tagline);
 
-        // Buttons Panel
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBounds(50, 150, 400, 250);
         buttonsPanel.setOpaque(false);
-        buttonsPanel.setLayout(new GridLayout(3, 2, 20, 20)); // Adjusted for 6 buttons
+        buttonsPanel.setLayout(new GridLayout(3, 2, 20, 20));
         frame.add(buttonsPanel);
 
-        // Menu Buttons
         String[] buttonLabels = {"Chats", "Settings"};
         for (String text : buttonLabels) {
             RoundedButton button = new RoundedButton(text);
@@ -65,7 +60,6 @@ public class HomePage {
             buttonsPanel.add(button);
         }
 
-        // Image Section
         RoundedImagePanel imagePanel = new RoundedImagePanel("src/Home_page.jpg");
         imagePanel.setBounds(500, 130, 350, 250);
         frame.add(imagePanel);
@@ -78,29 +72,20 @@ public class HomePage {
     }
 
     private void openTab(String tab) {
-        frame.dispose(); // Close home page
+        frame.dispose();
 
         switch (tab) {
             case "Chats":
                 openChat();
                 break;
-            case "Feeds":
-                new FeedPage();
-                break;
-            case "File Sharing":
-                new FileSharingUI();
-                break;
-            case "Friend Requests":
-                new FriendRequestUI();
-                break;
+            
             case "Settings":
-                new SettingsPage(user); // Pass user to SettingsPage
+                new SettingsPage(user);
                 break;
         }
     }
 }
 
-// **Rounded Button Class**
 class RoundedButton extends JButton {
     public RoundedButton(String text) {
         super(text);
@@ -124,7 +109,6 @@ class RoundedButton extends JButton {
     }
 }
 
-// **Rounded Image Panel**
 class RoundedImagePanel extends JPanel {
     private Image image;
 
