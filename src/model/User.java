@@ -6,7 +6,8 @@ public class User {
     private String username;
     private String email;
     private String password;
-
+    private String profilePicture;
+    private String about;
     public User(){
     }
 
@@ -23,6 +24,13 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 
     public String getUsername() {
@@ -50,13 +58,12 @@ public class User {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
 

@@ -99,6 +99,7 @@ public class LoginScreen extends JFrame {
         loginButton.setBounds(75, 280, 300, 40);
         loginButton.setContentAreaFilled(false);
         loginButton.setBorderPainted(false);
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginPanel.add(loginButton);
         
         
@@ -112,6 +113,7 @@ public class LoginScreen extends JFrame {
 
         // Register Button
         registerButton = new JButton("Sign up");
+        registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registerButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
         registerButton.setForeground(new Color(100, 130, 173));
         registerButton.setBorderPainted(false);
@@ -123,7 +125,9 @@ public class LoginScreen extends JFrame {
 
         // Back Button
         backButton = new JButton("Back");
+        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backButton.setBounds(10, 10, 80, 25);
+        backButton.setFocusPainted(false);
         loginPanel.add(backButton);
 
         frame.setVisible(true);

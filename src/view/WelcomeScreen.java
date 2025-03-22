@@ -44,6 +44,7 @@ public class WelcomeScreen extends JFrame {
         getStartedButton.setFont(new Font("SansSerif", Font.BOLD, 18));
         getStartedButton.setBounds(125, 200, 200, 50);
         getStartedButton.setBackground(new Color(100, 130, 173));
+        getStartedButton.setFocusPainted(false);
         getStartedButton.setForeground(Color.WHITE);
         rightPanel.add(getStartedButton);
 
