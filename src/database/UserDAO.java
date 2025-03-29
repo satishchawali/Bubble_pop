@@ -7,21 +7,20 @@ import java.util.List;
 
 public class UserDAO {
 
-    // ✅ Create a new user
     public boolean createUser(User user) {
-        String sql = "INSERT INTO users (username, email, password_hash, ) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+    
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
-
+    
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 return false;
             }
-
+    
             // Retrieve generated user ID
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -34,6 +33,7 @@ public class UserDAO {
             return false;
         }
     }
+    
 
     // ✅ Retrieve a user by ID
     public User getUserById(int id) {
